@@ -1,1 +1,12 @@
-
+{
+  "name": "shelfrx-pro",
+  "version": "1.0.0",
+  "description": "ShelfRx Pro - Boots Pharmacy Shelf Management",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}
