@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0B3D91">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ShelfRx Pro – Boots T3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --navy:#0B3D91;--navy2:#1A52B3;--teal:#00A3A3;--teal-bg:#E0F7F7;
+  --cream:#F4F6FB;--white:#fff;--ink:#111827;--muted:#6B7280;
+  --border:#E5E7EB;--green:#059669;--green-bg:#ECFDF5;
+  --amber:#D97706;--amber-bg:#FFFBEB;--red:#DC2626;--red-bg:#FEF2F2;
+  --r:14px;--rs:8px;--sh:0 1px 4px rgba(0,0,0,.08);--shm:0 4px 18px rgba(0,0,0,.11);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
+.topbar{background:var(--navy);color:#fff;padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:var(--shm)}
+.tl{display:flex;align-items:center;gap:10px}
+.tlogo{width:34px;height:34px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ttitle{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.tsub{font-size:10px;color:rgba(255,255,255,.55);margin-top:1px}
+.topbtns{display:flex;gap:6px}
+.tadd{background:rgba(255,255,255,.13);border:none;color:#fff;border-radius:10px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit}
+.tadd:active{background:rgba(255,255,255,.24)}
+.tscan{background:var(--teal);border:none;color:#fff;border-radius:10px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit}
+.screen{display:none;padding:16px 14px 90px;animation:fi .18s ease}
+.screen.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* NEAR EXPIRY BANNER */
+.expiry-banner{background:var(--red-bg);border:2px solid var(--red);border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+.expiry-banner-title{font-size:12px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.expiry-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.expiry-card{background:var(--white);border:3px solid var(--red);border-radius:var(--rs);padding:10px;box-shadow:0 0 0 2px rgba(220,38,38,.12)}
+.expiry-name{font-size:11px;font-weight:700;margin-bottom:4px;color:var(--ink);line-height:1.3}
+.expiry-meta{font-size:10px;color:var(--red);font-weight:600;font-family:'DM Mono',monospace}
+.expiry-shelf{font-size:10px;color:var(--muted);margin-top:2px}
+/* SEC */
+.sec-hd{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.sec-bar{width:4px;height:22px;border-radius:2px;flex-shrink:0}
+.sec-name{font-size:14px;font-weight:800;letter-spacing:-.2px;line-height:1.3}
+.sec-cnt{font-size:11px;color:var(--muted);margin-left:auto;font-weight:500;white-space:nowrap}
+.rack-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.rack-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .18s,transform .12s}
+.rack-card:active{transform:scale(.97)}
+.rack-card.alert{border-color:var(--amber)}
+.rack-thumb{width:100%;height:76px;position:relative;display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden}
+.rack-thumb img{width:100%;height:100%;object-fit:cover}
+.rack-badge{position:absolute;top:6px;left:6px;background:var(--navy);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace}
+.rack-alert-dot{position:absolute;top:6px;right:6px;background:var(--amber);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px}
+.rack-info{padding:9px 12px}
+.rack-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.rack-meta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.rdot{width:5px;height:5px;border-radius:50%;background:var(--teal);display:inline-block}
+.back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit;font-size:14px;font-weight:600;color:var(--navy);cursor:pointer;padding:0;margin-bottom:14px}
+.rack-hd{margin-bottom:14px}
+.rack-hd h2{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.rack-hd p{font-size:12px;color:var(--muted);margin-top:3px}
+.rack-sec-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.shelf-row{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:8px;overflow:hidden;border-left:4px solid var(--border)}
+.shelf-row.s-ok{border-left-color:var(--teal)}
+.shelf-row.s-low{border-left-color:var(--amber)}
+.shelf-row.s-out{border-left-color:var(--red)}
+.shelf-header{display:flex;align-items:center;justify-content:space-between;padding:11px 13px 9px;cursor:pointer;gap:8px}
+.shelf-code{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--navy);background:#EEF2FF;padding:3px 9px;border-radius:6px;white-space:nowrap}
+.shelf-hd-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.shelf-cnt{font-size:11px;color:var(--muted);white-space:nowrap}
+.chev{transition:transform .2s;color:var(--muted);flex-shrink:0}
+.shelf-body{display:none;padding:0 13px 13px;border-top:1px solid var(--border)}
+.shelf-body.open{display:block}
+/* PRODUCT CARD in shelf */
+.prod-mini{border-radius:var(--rs);border:1.5px solid var(--border);margin-bottom:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.prod-mini.near-expiry{border:3px solid var(--red)!important;box-shadow:0 0 0 3px rgba(220,38,38,.15),0 2px 8px rgba(220,38,38,.18)!important}
+.prod-mini-top{display:flex;align-items:flex-start;gap:8px;padding:10px 10px 6px}
+.prod-img-wrap{width:52px;height:52px;border-radius:var(--rs);background:linear-gradient(135deg,#EEF2FF,#E0F7F7);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;position:relative}
+.prod-img-wrap img{width:100%;height:100%;object-fit:cover}
+.prod-img-overlay{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .18s}
+.prod-img-wrap:hover .prod-img-overlay{opacity:1}
+.prod-img-overlay span{color:#fff;font-size:18px}
+.prod-main{flex:1;min-width:0}
+.pm-name{font-size:12px;font-weight:700;margin-bottom:3px;line-height:1.35}
+.pm-barcode{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:2px}
+.pm-alshaya{font-size:10px;color:#7C3AED;font-family:'DM Mono',monospace;margin-bottom:3px}
+.pm-tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:10px;font-weight:500;padding:2px 6px;border-radius:20px;font-family:'DM Mono',monospace}
+.tl2{background:#EEF2FF;color:#4338CA}
+.tf{background:#F5F3FF;color:#7C3AED}
+.tp{background:#F0FDF4;color:var(--green);font-weight:700}
+.texp{background:var(--red-bg);color:var(--red);font-weight:700}
+.texpok{background:var(--green-bg);color:var(--green)}
+.prod-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.stock-ctrl{display:flex;align-items:center;gap:4px}
+.sbtn{width:24px;height:24px;border-radius:50%;background:var(--cream);border:1.5px solid var(--border);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sbtn:active{background:var(--border)}
+.snum{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;min-width:22px;text-align:center}
+.chip{font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.c-ok{background:var(--green-bg);color:var(--green)}
+.c-low{background:var(--amber-bg);color:var(--amber)}
+.c-out{background:var(--red-bg);color:var(--red)}
+.c-exp{background:var(--red-bg);color:var(--red);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.prod-mini-footer{padding:6px 10px 8px;border-top:1px dashed var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.prod-actions-row{display:flex;gap:5px}
+.ibtn{width:26px;height:26px;border-radius:6px;background:var(--cream);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.ibtn:active{background:var(--border)}
+.expiry-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--red-bg);color:var(--red);margin-left:auto}
+.remarks-text{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px;padding:0 10px 6px;line-height:1.4}
+/* PHOTO */
+.shelf-photo-wrap{border-radius:var(--rs);overflow:hidden;height:80px;background:linear-gradient(135deg,#EEF2FF,#E0F7F7);display:flex;align-items:center;justify-content:center;margin-bottom:11px;position:relative;cursor:pointer}
+.shelf-photo-wrap img{width:100%;height:100%;object-fit:cover}
+.ph-icon{font-size:26px;opacity:.3}
+.ph-label{position:absolute;bottom:5px;right:7px;background:rgba(255,255,255,.92);color:var(--navy);font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
+.add-shelf-btn{width:100%;padding:9px;background:var(--teal-bg);color:var(--teal);border:1.5px dashed var(--teal);border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:5px}
+.empty-shelf{text-align:center;padding:12px;color:var(--muted);font-size:11px}
+/* SUMMARY */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:13px;display:flex;align-items:center;gap:11px}
+.sic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sv{font-size:20px;font-weight:800;font-family:'DM Mono',monospace;line-height:1}
+.sl{font-size:10px;color:var(--muted);margin-top:2px}
+.search-wrap{position:relative;margin-bottom:12px}
+.search-inp{width:100%;padding:10px 13px 10px 38px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:13px;background:var(--white);outline:none}
+.search-inp:focus{border-color:var(--navy)}
+.sico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:150;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+.nb{flex:1;padding:9px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;color:var(--muted);font-family:inherit;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;position:relative}
+.nb.active{color:var(--navy)}
+.nb svg{width:20px;height:20px}
+.ni{position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:3px;background:var(--navy);border-radius:0 0 3px 3px;opacity:0;transition:opacity .18s}
+.nb.active .ni{opacity:1}
+/* MODALS */
+.mbk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:flex-end}
+.mbk.open{display:flex}
+.modal{background:var(--white);border-radius:var(--r) var(--r) 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:20px 16px 40px}
+.mhandle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:16px}
+.fg{margin-bottom:12px}
+.fl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:block}
+.fi2{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:14px;color:var(--ink);background:var(--white);outline:none}
+.fi2:focus{border-color:var(--navy)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fsel{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:14px;color:var(--ink);background:var(--white);outline:none;appearance:none}
+.btn-p{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px}
+.btn-p:active{background:var(--navy2)}
+.btn-s{width:100%;padding:11px;background:var(--cream);color:var(--muted);border:1.5px solid var(--border);border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px}
+.btn-teal{width:100%;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px}
+/* SCANNER MODAL */
+.scan-modal{background:var(--white);border-radius:var(--r) var(--r) 0 0;width:100%;max-height:95vh;overflow-y:auto;padding:20px 16px 40px}
+#scannerVideo{width:100%;border-radius:var(--r);background:#000;aspect-ratio:4/3;display:block}
+.scan-result-card{background:var(--white);border:2px solid var(--teal);border-radius:var(--r);padding:16px;margin-top:14px}
+.scan-result-name{font-size:16px;font-weight:800;margin-bottom:6px}
+.scan-result-code{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);margin-bottom:10px}
+.scan-stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.scan-stat{background:var(--cream);border-radius:var(--rs);padding:10px;text-align:center}
+.scan-stat-val{font-size:18px;font-weight:800;font-family:'DM Mono',monospace}
+.scan-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.sell-box{background:#EEF2FF;border-radius:var(--rs);padding:12px;margin-bottom:10px}
+.sell-box-title{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.sell-box-text{font-size:12px;line-height:1.6;color:var(--ink)}
+/* TRANSLATE */
+.translate-panel{margin-top:10px}
+.lang-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.lang-btn{padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted)}
+.lang-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.translation-box{background:var(--cream);border-radius:var(--rs);padding:12px;min-height:60px;font-size:13px;line-height:1.7;direction:ltr}
+.translation-box.rtl{direction:rtl;text-align:right;font-size:14px}
+.translation-loading{color:var(--muted);font-style:italic;font-size:12px}
+/* PROD DETAIL MODAL */
+.prod-detail-img{width:100%;height:140px;border-radius:var(--r);object-fit:cover;margin-bottom:12px;background:linear-gradient(135deg,#EEF2FF,#E0F7F7);display:flex;align-items:center;justify-content:center;font-size:48px}
+/* all-products list */
+.all-prod-card{background:var(--white);border-radius:var(--rs);padding:11px 12px;margin-bottom:8px;box-shadow:var(--sh);display:flex;align-items:flex-start;justify-content:space-between;gap:8px;border-left:4px solid var(--border)}
+.all-prod-card.near-expiry{border-left-color:var(--red)!important;border:3px solid var(--red);box-shadow:0 0 0 2px rgba(220,38,38,.13)!important}
+.lbl-sec{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:10px;margin-top:4px}
+.expiry-days-red{color:var(--red);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tl">
+    <div class="tlogo">💊</div>
+    <div><div class="ttitle">ShelfRx</div><div class="tsub">Boots T3 · Planogram MAY 2026</div></div>
+  </div>
+  <div class="topbtns">
+    <button class="tscan" onclick="openScanner()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>Scan
+    </button>
+    <button class="tadd" id="topAddBtn" onclick="openAddModal()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add
+    </button>
+  </div>
+</div>
+
+<div class="screen active" id="screen-racks"></div>
+<div class="screen" id="screen-detail">
+  <button class="back-btn" onclick="goBack()"><svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>All Racks</button>
+  <div id="detailInner"></div>
+</div>
+<div class="screen" id="screen-summary">
+  <div class="lbl-sec">Store Overview</div>
+  <div class="stat-row" id="summaryStats"></div>
+  <div id="nearExpiryBanner"></div>
+  <div class="lbl-sec">All Products</div>
+  <div class="search-wrap">
+    <svg class="sico" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input class="search-inp" type="search" placeholder="Search name, barcode, Alshaya code…" oninput="filterAll(this.value)" id="searchInp">
+  </div>
+  <div id="allList"></div>
+</div>
+
+<nav class="bnav">
+  <button class="nb active" onclick="switchTab('racks')" id="nav-racks"><div class="ni"></div><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Racks</button>
+  <button class="nb" onclick="switchTab('summary')" id="nav-summary"><div class="ni"></div><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3z"/></svg>All Products</button>
+</nav>
+
+<!-- ADD/EDIT PRODUCT MODAL -->
+<div class="mbk" id="modalBk" onclick="closeMbk(event)">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <h3 id="mTitle">Add Product</h3>
+    <input type="hidden" id="eId">
+    <div class="fg"><label class="fl">Product Name</label><input class="fi2" type="text" id="fName" placeholder="e.g. Vital Collagen 500mg"></div>
+    <div class="fg"><label class="fl">Barcode</label><input class="fi2" type="text" id="fBarcode" placeholder="e.g. 5019781022700"></div>
+    <div class="fg"><label class="fl">Alshaya Code</label><input class="fi2" type="text" id="fAlshaya" placeholder="e.g. WOBOWO…"></div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Rack</label><select class="fsel" id="fRack" onchange="updateShelfOpts()"></select></div>
+      <div class="fg"><label class="fl">Shelf</label><select class="fsel" id="fShelf"></select></div>
+    </div>
+    <div class="fg"><label class="fl">Shelf Type / Notch</label><input class="fi2" type="text" id="fNotch" placeholder='e.g. 12" Wooden Notch:33'></div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Facing</label><input class="fi2" type="number" id="fFacing" placeholder="1" min="1"></div>
+      <div class="fg"><label class="fl">Stock Qty</label><input class="fi2" type="number" id="fStock" placeholder="0" min="0"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Lines</label><input class="fi2" type="number" id="fLines" placeholder="1" min="1"></div>
+      <div class="fg"><label class="fl">Price (AED)</label><input class="fi2" type="number" id="fPrice" placeholder="0.00" step="0.01"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label class="fl">Expiry Date</label><input class="fi2" type="date" id="fExpiry"></div>
+      <div class="fg"><label class="fl">Expiry Qty</label><input class="fi2" type="number" id="fExpiryQty" placeholder="0" min="0"></div>
+    </div>
+    <div class="fg"><label class="fl">Remarks / Notes</label><textarea class="fi2" id="fRemarks" rows="2" placeholder="e.g. Keep refrigerated, check temp daily" style="resize:vertical"></textarea></div>
+    <div class="fg"><label class="fl">Product Image</label>
+      <div id="imgPreview" style="width:100%;height:80px;border-radius:var(--rs);background:linear-gradient(135deg,#EEF2FF,#E0F7F7);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:6px;overflow:hidden">📷</div>
+      <label for="fImg" style="display:block;width:100%;padding:9px;background:var(--teal-bg);color:var(--teal);border:1.5px dashed var(--teal);border-radius:var(--rs);font-size:12px;font-weight:600;text-align:center;cursor:pointer">📷 Upload Product Image</label>
+      <input type="file" id="fImg" accept="image/*" style="display:none" onchange="previewImg(event)">
+    </div>
+    <button class="btn-p" onclick="saveProduct()">Save Product</button>
+    <button class="btn-s" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- SCANNER MODAL -->
+<div class="mbk" id="scannerBk" onclick="closeScannerMbk(event)">
+  <div class="scan-modal">
+    <div class="mhandle"></div>
+    <h3 style="margin-bottom:10px">📷 Scan Barcode</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Point camera at product barcode · Or type barcode manually</p>
+    <video id="scannerVideo" autoplay playsinline muted></video>
+    <canvas id="scanCanvas" style="display:none"></canvas>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input class="fi2" type="text" id="manualBarcode" placeholder="Type barcode and press Search" style="flex:1">
+      <button class="btn-p" style="width:auto;padding:10px 16px;margin-top:0" onclick="searchByBarcode(document.getElementById('manualBarcode').value)">Search</button>
+    </div>
+    <div id="scanResult"></div>
+    <button class="btn-s" onclick="closeScanner()">Close Scanner</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL / PATIENT MODAL -->
+<div class="mbk" id="detailMbk" onclick="closeDetailMbk(event)">
+  <div class="modal" id="detailModal">
+    <div class="mhandle"></div>
+    <div id="detailModalInner"></div>
+    <button class="btn-s" onclick="closeDetailModal()">Close</button>
+  </div>
+</div>
+
+<!-- PRODUCT IMAGE UPLOAD MODAL -->
+<div class="mbk" id="imgMbk" onclick="closeImgMbk(event)">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <h3>Product Image</h3>
+    <div id="bigImgPreview" style="width:100%;height:180px;border-radius:var(--r);background:linear-gradient(135deg,#EEF2FF,#E0F7F7);display:flex;align-items:center;justify-content:center;font-size:64px;margin-bottom:14px;overflow:hidden"></div>
+    <input type="hidden" id="imgTargetId">
+    <label for="bigImgInput" style="display:block;width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;text-align:center;cursor:pointer">📷 Upload / Change Image</label>
+    <input type="file" id="bigImgInput" accept="image/*" style="display:none" onchange="saveProdImg(event)">
+    <button class="btn-s" onclick="closeImgMbk()">Close</button>
+  </div>
+</div>
+
+<script>
+
+const SECTIONS=[
+  {name:'Collagen & Skin Brightening',color:'#E11D48',bg:'#FFF1F2',racks:[1,2]},
+  {name:"Women's / Skin, Hair & Nails",color:'#7C3AED',bg:'#F5F3FF',racks:[3,4]},
+  {name:'Immunity / Multivitamins',color:'#059669',bg:'#ECFDF5',racks:[5,6]},
+  {name:'Heart Health / Omega / Joint Care',color:'#0B3D91',bg:'#EEF2FF',racks:[7,8]},
+  {name:'Weight Loss / Sleep / Calcium & Mg',color:'#D97706',bg:'#FFFBEB',racks:[9,10,11,12]},
+];
+const RACK_EMOJIS=['🧴','🌸','💅','💊','🛡️','🦴','💪','🔬','🐟','🦴','⚖️','😴'];
+const SPR=6;
+const EXPIRY_WARN_DAYS=90;
+
+// PLANOGRAM (embedded, abbreviated to key fields — same full set as previous build)
+const PLANOGRAM_BASE=[
+{id:'p001',name:'PRO COLLAGENIUM 14X25ML',barcode:'16185019867',alshaya:'WOBOWOM01986',rack:1,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:8,lines:2,price:0},
+{id:'p002',name:'SKINAGE COLLAGEN PRISTIGE 15 AMPOULES 10000MG',barcode:'7629999061590',alshaya:'B2BOB29039117',rack:1,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:4,lines:2,price:0},
+{id:'p003',name:'NEOCELL SUPER COLLAGEN 7OZ',barcode:'16185132955',alshaya:'342714922',rack:1,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:3,lines:2,price:0},
+{id:'p004',name:'NEOCELL SUPER COLLAGEN POWDER PEPTIDES 198G BERRY LEMON',barcode:'220212282',alshaya:'3859892980627',rack:1,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:0,lines:2,price:0},
+{id:'p005',name:'SWEDISH NATURA COLLAGEN 10000 FISH PURE PEPTIDE POWDER 300GM',barcode:'6285078000150',alshaya:'B2BOB28000150',rack:1,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p006',name:'SAKAI COLLAGEN COMPLETE 332G',barcode:'5903260902822',alshaya:'Y1BOY10902822',rack:1,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p007',name:'SKINAGE COLLAGEN TRI ACTIVE 20000MG 500ML',barcode:'130252241',alshaya:'129826893',rack:1,shelf:2,notch:'19',shelfType:'12" Wooden',facing:2,stock:7,lines:2,price:0},
+{id:'p008',name:'LA BELLE COLLAGEN 10G DRINK 15 BOTTLES',barcode:'7350122360685',alshaya:'7301337278319',rack:1,shelf:2,notch:'19',shelfType:'12" Wooden',facing:1,stock:18,lines:1,price:0},
+{id:'p009',name:'COLLAGEN BEAUTY SHOTS 12 SHOTS',barcode:'868573000182',alshaya:'B2BOB273000182',rack:1,shelf:2,notch:'19',shelfType:'12" Wooden',facing:1,stock:10,lines:1,price:0},
+{id:'p010',name:'SWEDISH MARINE BEAUTY COLLAGEN SHOTS 20S X 25ML',barcode:'5019781022700',alshaya:'220233096',rack:1,shelf:2,notch:'19',shelfType:'12" Wooden',facing:1,stock:12,lines:1,price:0},
+{id:'p011',name:'SWEDISH NATURA COLLAGEN 10000 FISH PURE PEPTIDE LIQUID 500ML',barcode:'129962664',alshaya:'129816897',rack:1,shelf:2,notch:'19',shelfType:'12" Wooden',facing:1,stock:12,lines:1,price:0},
+{id:'p012',name:'PHARMAXXI BEAUTY COLLAGEN 14STKS',barcode:'161851299000',alshaya:'',rack:1,shelf:2,notch:'19',shelfType:'12" Wooden',facing:2,stock:6,lines:2,price:0},
+{id:'p013',name:'HEALTH AID NURIDEEN PLUS TAB 60S',barcode:'7301337323422',alshaya:'333920279',rack:1,shelf:3,notch:'13',shelfType:'12" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p014',name:'NEOCELL COLLAGEN POMEGRANATE LIQ 473ML',barcode:'8423245105248',alshaya:'333464221',rack:1,shelf:3,notch:'13',shelfType:'12" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p015',name:'PURE GOLD COLLAGEN 500ML 10X50ML 1BX',barcode:'3858893381112',alshaya:'B2BOB2259570001',rack:1,shelf:3,notch:'13',shelfType:'12" Wooden',facing:2,stock:2,lines:2,price:0},
+{id:'p016',name:'PURE GOLD COLLAGEN FORTE 500ML',barcode:'220227618',alshaya:'339999551',rack:1,shelf:3,notch:'13',shelfType:'12" Wooden',facing:1,stock:1,lines:1,price:0},
+{id:'p017',name:'SWEDISH NUTRA COLLAGEN GOLD RETINOL AMPOULES 15S',barcode:'5060259570015',alshaya:'5060259570179',rack:1,shelf:3,notch:'13',shelfType:'12" Wooden',facing:1,stock:3,lines:1,price:0},
+{id:'p018',name:'NEOCELL SUPER COLLAGEN + VIT C + BIOTIN 180 TABS',barcode:'853244003005',alshaya:'B2BOB244003005',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:2,stock:6,lines:2,price:0},
+{id:'p019',name:'NEOCELL SUPER COLLAGEN + VIT C + BIOTIN 270 TABS',barcode:'853244003074',alshaya:'B2BOB244003074',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p020',name:'NEOCELL COLLAGEN BEAUTY BUILDER 150S TABS',barcode:'35046087456',alshaya:'B2BOB246087456',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:1,stock:14,lines:1,price:0},
+{id:'p021',name:'COLLAGEN BEAUTY CAPSULES 30 CAPS',barcode:'16185129009',alshaya:'WOBOWOM12900',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:2,stock:6,lines:2,price:0},
+{id:'p022',name:"NATURES AID COLLAGEN VIT C ZINC 90VCAPS",barcode:'347749193',alshaya:'',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:1,stock:5,lines:1,price:0},
+{id:'p023',name:'VITABIOTICS PERFECTIL PLUS SKIN TABS 56S',barcode:'868455626120',alshaya:'628069520231',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:1,stock:4,lines:1,price:0},
+{id:'p024',name:'YOUTHEORY COLLAGEN 120S TAB',barcode:'335759558',alshaya:'Y1BOY10900873',rack:1,shelf:4,notch:'26',shelfType:'15" Wooden',facing:1,stock:18,lines:1,price:0},
+{id:'p025',name:'YOUTHEORY COLLAGEN ADVANCED 160S TAB',barcode:'5903260900873',alshaya:'330963987',rack:1,shelf:5,notch:'7',shelfType:'15" Wooden',facing:2,stock:8,lines:2,price:0},
+{id:'p026',name:'REJUVICARE SUPER COLLAGEN CAPS 90S',barcode:'330924233',alshaya:'220154834',rack:1,shelf:5,notch:'7',shelfType:'15" Wooden',facing:2,stock:4,lines:2,price:0},
+{id:'p027',name:'NEOCELL FISH COLLAGEN + HA 120CAP',barcode:'Y1BOY10902730',alshaya:'B2BOB22370098',rack:1,shelf:5,notch:'7',shelfType:'15" Wooden',facing:2,stock:6,lines:2,price:0},
+{id:'p028',name:'YOUR GUMMIES COLLAGEN PLUS BIOTIN VIT C ZINC 60S',barcode:'16185132603',alshaya:'16185132627',rack:1,shelf:5,notch:'7',shelfType:'15" Wooden',facing:2,stock:20,lines:2,price:0},
+{id:'p029',name:'OH MY OH COLLAGEN GUMMIES 350G',barcode:'16185129313',alshaya:'5903260902730',rack:1,shelf:5,notch:'7',shelfType:'15" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p030',name:'COLLAGEN BEAUTY EFFERVESCENT 20 TABS',barcode:'5023652370098',alshaya:'5021265223398',rack:1,shelf:5,notch:'7',shelfType:'15" Wooden',facing:1,stock:5,lines:1,price:0},
+{id:'p032',name:'DUCRAY ANACAPS HAIR SUPP 60 CAP',barcode:'3282779065863',alshaya:'220215086',rack:2,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:8,lines:1,price:0},
+{id:'p033',name:'ALLINE PROCAP 75 CAPSULES',barcode:'5425003041587',alshaya:'B2BOB23041587',rack:2,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:7,lines:1,price:0},
+{id:'p034',name:'FASTCAP 500 HAIRLOSS 30TABS',barcode:'8057289181649',alshaya:'B2BOB29181649',rack:2,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p035',name:'BIORGA CYSTIPHANE TABLETS 120S',barcode:'3660398501021',alshaya:'Y5BOY58500925',rack:2,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:7,lines:1,price:0},
+{id:'p036',name:'PANTOGAR 90 CAPS',barcode:'4046222750909',alshaya:'XSBOXS2750909',rack:2,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:5,lines:2,price:0},
+{id:'p037',name:'HAID HAIRSKINNAIL FRM TAB 30S',barcode:'220166011',alshaya:'',rack:2,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:4,lines:1,price:0},
+{id:'p046',name:'VITABIOTICS PERFECTIL 30S',barcode:'5019781000234',alshaya:'WMBOWM1000234',rack:2,shelf:4,notch:'13',shelfType:'12" Wooden',facing:1,stock:10,lines:1,price:0},
+{id:'p050',name:'PRIORIN NCAP 90S',barcode:'B2BOB25012364',alshaya:'',rack:2,shelf:5,notch:'7',shelfType:'15" Wooden',facing:1,stock:4,lines:1,price:0},
+{id:'p057',name:'WHITE HEALTH VITAC-1000 LIPOSOMAL 60S',barcode:'344405790',alshaya:'WOBOWO21225',rack:3,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:8,lines:1,price:0},
+{id:'p058',name:'21ST CENTURY C-1000MG PROLONGED RELEASE 110S',barcode:'15794068723',alshaya:'B2BOB24068723',rack:3,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p059',name:'COUNTRY LIFE VIT C 1000 MG 90 TABS',barcode:'850072993003',alshaya:'',rack:3,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:5,lines:1,price:0},
+{id:'p073',name:'REDOXON ORANGE 1G EFF TABS 15S',barcode:'9650155002070',alshaya:'WUBOWUCALC987',rack:3,shelf:2,notch:'26',shelfType:'12" Wooden',facing:2,stock:11,lines:2,price:0},
+{id:'p075',name:'REDOXON TRIPLE FORMULA EFF TABS 15S',barcode:'5024874015507',alshaya:'B2BOB24015507',rack:3,shelf:2,notch:'26',shelfType:'12" Wooden',facing:1,stock:7,lines:1,price:0},
+{id:'p078',name:'BEROCCA EFFERVESCENT TABS 10',barcode:'',alshaya:'WUBOWUASP-032-0',rack:3,shelf:2,notch:'26',shelfType:'12" Wooden',facing:1,stock:8,lines:1,price:0},
+{id:'p124',name:'CENTRUM SILVER 100S',barcode:'5019781010172',alshaya:'Y3BOY3CENSIL1000',rack:4,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:4,lines:1,price:0},
+{id:'p125',name:'CENTRUM SILVER 30S',barcode:'6251613000527',alshaya:'Y3BOY3CENSIL30S',rack:4,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:6,lines:2,price:0},
+{id:'p126',name:'CENTRUM ENERGY TAB 100S',barcode:'6291109121039',alshaya:'344555284',rack:4,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:4,lines:1,price:0},
+{id:'p152',name:'COUNTRY LIFE OMEGA 3 MOOD 90 SOFTGELS',barcode:'733739016867',alshaya:'WOBOWO1686',rack:5,shelf:1,notch:'33',shelfType:'12" Wooden',facing:2,stock:8,lines:2,price:0},
+{id:'p155',name:'SOLGAR OMEGA 3 FISH OIL CON SG 120S',barcode:'5019781028931',alshaya:'220154084',rack:5,shelf:2,notch:'13',shelfType:'12" Wooden',facing:2,stock:6,lines:2,price:0},
+{id:'p170',name:'CARDIOACE CAPSULES 30S',barcode:'',alshaya:'WOBOWO CARD1608',rack:5,shelf:4,notch:'26',shelfType:'15" Wooden',facing:1,stock:8,lines:1,price:0},
+{id:'p171',name:'CH ALPHA 30X25ML',barcode:'9650364002465',alshaya:'B2BOB2A3025ML',rack:6,shelf:1,notch:'33',shelfType:'12" Wooden',facing:1,stock:4,lines:1,price:0},
+{id:'p176',name:'21ST CENTURY ARTHRI-FLEX TABS 120S',barcode:'',alshaya:'WOBOWOMTC22622',rack:6,shelf:2,notch:'19',shelfType:'12" Wooden',facing:3,stock:4,lines:3,price:0},
+{id:'p188',name:'FLEXAMIN TABS 120+40S',barcode:'699866068448',alshaya:'ZIBOZI69986606832',rack:6,shelf:3,notch:'26',shelfType:'12" Wooden',facing:5,stock:6,lines:5,price:0},
+{id:'p217',name:'NOW VITAMIN D3/K2 1000IU/45MCG 120 CAPS',barcode:'733739003690',alshaya:'WOBOWO9003690',rack:6,shelf:6,notch:'1',shelfType:'15" Inverted',facing:1,stock:5,lines:1,price:0},
+{id:'p228',name:'VITABIOTICS ULTRA VIT D3 2000IU 96 TABS',barcode:'5021265247400',alshaya:'WOBOWO5247400',rack:6,shelf:6,notch:'1',shelfType:'15" Inverted',facing:1,stock:13,lines:1,price:0},
+{id:'p229',name:'NUTRITIONL APPLE CIDER EXTRA STR VINEGAR TAB 100S',barcode:'83000164569',alshaya:'B2BOB20164569',rack:7,shelf:1,notch:'33',shelfType:'12" Wooden',facing:3,stock:8,lines:3,price:0},
+{id:'p230',name:'YOUR GUMMIES APPLE CIDER VINEGAR GUMMIES 60S',barcode:'5903163601617',alshaya:'B2BOB23601617',rack:7,shelf:1,notch:'33',shelfType:'12" Wooden',facing:3,stock:8,lines:3,price:0},
+{id:'p248',name:'NOW 5HTP 100MG 60 VCAPS',barcode:'733739148995',alshaya:'',rack:7,shelf:5,notch:'15',shelfType:'15" Inverted',facing:1,stock:6,lines:1,price:0},
+{id:'p265',name:'NOW GINKGO BILOBA 60MG 60CAP',barcode:'733739046864',alshaya:'WOBOWO39046864',rack:7,shelf:6,notch:'7',shelfType:'15" Wooden',facing:1,stock:6,lines:1,price:0},
+{id:'p270',name:'NOW L-CARNITINE 500 MG 60 VCAPS',barcode:'733739110466',alshaya:'WOBOWO41210072',rack:7,shelf:6,notch:'7',shelfType:'15" Wooden',facing:1,stock:12,lines:1,price:0},
+{id:'p271',name:'HEALTH AID L-ARGININE 500MG TAB 60S',barcode:'5019781022519',alshaya:'',rack:7,shelf:6,notch:'1',shelfType:'15" Inverted',facing:1,stock:4,lines:1,price:0},
+];
+
+let PLANOGRAM=[...PLANOGRAM_BASE];
+let S={photos:{},openShelves:{},stockOverrides:{},extras:{},prodImgs:{},customProds:[]};
+
+function loadS(){
+  try{
+    const d=localStorage.getItem('shelfrx4');
+    if(d){const p=JSON.parse(d);Object.assign(S,p);}
+  }catch(e){}
+  // restore custom prods
+  S.customProds.forEach(cp=>{if(!PLANOGRAM.find(p=>p.id===cp.id))PLANOGRAM.push(cp);});
+}
+function saveS(){localStorage.setItem('shelfrx4',JSON.stringify(S));}
+function uid(){return Math.random().toString(36).slice(2,9);}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function sectionFor(r){return SECTIONS.find(s=>s.racks.includes(r))||SECTIONS[0];}
+function shelfCode(r,s){return r+'.'+s;}
+function getStock(id){return (id in S.stockOverrides)?S.stockOverrides[id]:(PLANOGRAM.find(p=>p.id===id)?.stock||0);}
+function setStock(id,v){S.stockOverrides[id]=Math.max(0,v);saveS();}
+function getExtra(id){return S.extras[id]||{expiry:'',expiryQty:0,remarks:''};}
+function setExtra(id,ex){S.extras[id]=ex;saveS();}
+function getProdImg(id){return S.prodImgs[id]||'';}
+
+function daysUntilExpiry(dateStr){
+  if(!dateStr)return null;
+  const now=new Date();now.setHours(0,0,0,0);
+  const exp=new Date(dateStr);
+  return Math.round((exp-now)/(1000*60*60*24));
+}
+function isNearExpiry(id){
+  const ex=getExtra(id);
+  if(!ex.expiry)return false;
+  const d=daysUntilExpiry(ex.expiry);
+  return d!==null&&d<=EXPIRY_WARN_DAYS;
+}
+function stockStatus(v){
+  if(v===0)return{cls:'s-out',chip:'c-out',label:'Out'};
+  if(v<5)return{cls:'s-low',chip:'c-low',label:'Low'};
+  return{cls:'s-ok',chip:'c-ok',label:'OK'};
+}
+
+// ── SELL TIPS DB ──
+const SELL_TIPS={
+  'collagen':['Ask about skin elasticity concerns and age','Mention 10,000mg marine collagen for visible results in 4–6 weeks','Pair with Vitamin C products for better absorption','For joint issues recommend Collagen + HA combinations'],
+  'omega':['Ideal for heart health and brain function','Suggest 1000mg EPA+DHA daily dose','Pair with Vitamin D3 for immune support','Best taken with a meal to avoid fishy aftertaste'],
+  'vitamin c':['Excellent for immunity and skin brightening','Effervescent range is fastest-absorbing','Suggest 1000mg daily; pair with Zinc for extra immunity'],
+  'vitamin d':['Essential for bone health and immunity','Most patients in UAE are Vitamin D deficient','D3 is more bioavailable than D2','Pair with Calcium and K2 for bone support'],
+  'calcium':['Important for bone density especially in women over 40','Calcium Citrate absorbs better than Carbonate','Always pair with Vitamin D3 and Magnesium'],
+  'hair':['Biotin + Collagen combination gives best results','Results seen in 3–4 months of consistent use','Suggest alongside Iron check for hair loss patients'],
+  'probiotic':['Best taken on an empty stomach or before bed','Refrigerated probiotics may have higher viability','Match strain to symptom: Lactobacillus for gut, Cranberry for UTI'],
+  'default':['Check patient age and specific health goal','Recommend the correct dosage for their weight','Advise to take with food unless stated otherwise','Mention any contraindications with common medications']
+};
+function getSellTips(name){
+  const n=name.toLowerCase();
+  for(const[k,v] of Object.entries(SELL_TIPS)){if(k!=='default'&&n.includes(k))return v;}
+  return SELL_TIPS.default;
+}
+
+// ── PATIENT REMARKS TRANSLATION ──
+const LANGUAGES=[
+  {code:'ar',name:'Arabic',flag:'🇸🇦',rtl:true},
+  {code:'fr',name:'French',flag:'🇫🇷',rtl:false},
+  {code:'zh',name:'Chinese',flag:'🇨🇳',rtl:false},
+  {code:'fa',name:'Persian',flag:'🇮🇷',rtl:true},
+  {code:'sw',name:'Swahili',flag:'🇰🇪',rtl:false},
+  {code:'am',name:'Amharic',flag:'🇪🇹',rtl:false},
+];
+
+// Offline translation dictionary for common pharmacy instructions
+const TRANSLATIONS={
+  ar:{
+    'Take 1 tablet daily with food':'تناول قرصاً واحداً يومياً مع الطعام',
+    'Take 2 tablets daily':'تناول قرصين يومياً',
+    'Take with a full glass of water':'تناول مع كوب كامل من الماء',
+    'Store in a cool dry place':'احفظه في مكان بارد وجاف',
+    'Keep refrigerated':'يُحفظ مبرداً',
+    'Take before bedtime':'تناول قبل النوم',
+    'Take on an empty stomach':'تناول على معدة فارغة',
+    'Do not exceed stated dose':'لا تتجاوز الجرعة المحددة',
+    'Consult your doctor if pregnant':'استشر طبيبك إذا كنت حاملاً',
+    'Check temperature daily':'افحص درجة الحرارة يومياً',
+    'Near expiry - use first':'قارب على الانتهاء - استخدم أولاً',
+    'Out of stock':'نفدت الكمية',
+    'Low stock':'الكمية منخفضة',
+  },
+  fr:{
+    'Take 1 tablet daily with food':'Prendre 1 comprimé par jour avec de la nourriture',
+    'Take 2 tablets daily':'Prendre 2 comprimés par jour',
+    'Take with a full glass of water':'Prendre avec un grand verre d\'eau',
+    'Store in a cool dry place':'Conserver dans un endroit frais et sec',
+    'Keep refrigerated':'Conserver au réfrigérateur',
+    'Take before bedtime':'Prendre avant le coucher',
+    'Take on an empty stomach':'Prendre à jeun',
+    'Do not exceed stated dose':'Ne pas dépasser la dose indiquée',
+    'Consult your doctor if pregnant':'Consultez votre médecin si vous êtes enceinte',
+    'Near expiry - use first':'Proche de la péremption - utiliser en premier',
+    'Out of stock':'En rupture de stock',
+    'Low stock':'Stock faible',
+  },
+  zh:{
+    'Take 1 tablet daily with food':'每天随餐服用1片',
+    'Take 2 tablets daily':'每天服用2片',
+    'Take with a full glass of water':'用一整杯水送服',
+    'Store in a cool dry place':'存放于阴凉干燥处',
+    'Keep refrigerated':'需要冷藏保存',
+    'Take before bedtime':'睡前服用',
+    'Take on an empty stomach':'空腹服用',
+    'Do not exceed stated dose':'不要超过规定剂量',
+    'Consult your doctor if pregnant':'怀孕期间请咨询医生',
+    'Near expiry - use first':'即将过期，请先使用',
+    'Out of stock':'缺货',
+    'Low stock':'库存不足',
+  },
+  fa:{
+    'Take 1 tablet daily with food':'روزی یک قرص همراه با غذا مصرف کنید',
+    'Take 2 tablets daily':'روزی دو قرص مصرف کنید',
+    'Take with a full glass of water':'با یک لیوان کامل آب مصرف کنید',
+    'Store in a cool dry place':'در جای خنک و خشک نگهداری کنید',
+    'Keep refrigerated':'در یخچال نگهداری کنید',
+    'Take before bedtime':'قبل از خواب مصرف کنید',
+    'Take on an empty stomach':'با معده خالی مصرف کنید',
+    'Do not exceed stated dose':'از دوز تجویز شده تجاوز نکنید',
+    'Near expiry - use first':'نزدیک به انقضا - اول استفاده کنید',
+    'Out of stock':'موجود نیست',
+    'Low stock':'موجودی کم',
+  },
+  sw:{
+    'Take 1 tablet daily with food':'Chukua kidonge 1 kila siku pamoja na chakula',
+    'Take 2 tablets daily':'Chukua vidonge 2 kila siku',
+    'Take with a full glass of water':'Chukua na glasi nzima ya maji',
+    'Store in a cool dry place':'Hifadhi mahali pa baridi na kavu',
+    'Keep refrigerated':'Weka kwenye jokofu',
+    'Take before bedtime':'Chukua kabla ya kulala',
+    'Take on an empty stomach':'Chukua ukiwa na tumbo tupu',
+    'Do not exceed stated dose':'Usizidi kipimo kilichoainishwa',
+    'Near expiry - use first':'Karibu na muda wa kuisha - tumia kwanza',
+    'Out of stock':'Imekwisha',
+    'Low stock':'Hisa chache',
+  },
+  am:{
+    'Take 1 tablet daily with food':'በቀን አንድ ጽላት ከምግብ ጋር ይውሰዱ',
+    'Take 2 tablets daily':'በቀን ሁለት ጽላቶችን ይውሰዱ',
+    'Take with a full glass of water':'ሙሉ ብርጭቆ ውሃ ጋር ይውሰዱ',
+    'Store in a cool dry place':'ቀዝቃዛ እና ደረቅ ቦታ ያስቀምጡ',
+    'Keep refrigerated':'ማቀዝቀዣ ውስጥ ያስቀምጡ',
+    'Take before bedtime':'ከመኝታ በፊት ይውሰዱ',
+    'Take on an empty stomach':'ባዶ ሆድ ይውሰዱ',
+    'Do not exceed stated dose':'የተገለጸውን መጠን አይብልጡ',
+    'Near expiry - use first':'ፍጻሜ ቅርብ ነው - መጀመሪያ ይጠቀሙ',
+    'Out of stock':'አልቋል',
+    'Low stock':'ዝቅተኛ ክምችት',
+  }
+};
+
+function translateText(text,langCode){
+  const dict=TRANSLATIONS[langCode]||{};
+  // Try exact match
+  if(dict[text])return dict[text];
+  // Try to find a partial match and translate chunks
+  let result=text;
+  for(const[en,trans] of Object.entries(dict)){
+    if(text.toLowerCase().includes(en.toLowerCase())){
+      result=result.replace(new RegExp(en,'gi'),trans);
+    }
+  }
+  if(result===text){
+    // Provide a helpful message with the untranslated text
+    const msgs={ar:'(النص الأصلي: ',fr:'(Texte original: ',zh:'(原文: ',fa:'(متن اصلی: ',sw:'(Maandishi asili: ',am:'(ዋና ጽሁፍ: '};
+    return (msgs[langCode]||'(Original: ')+text+')';
+  }
+  return result;
+}
+
+// ── RENDER RACKS ──
+function renderRacks(){
+  const el=document.getElementById('screen-racks');
+  const nearExp=PLANOGRAM.filter(p=>isNearExpiry(p.id));
+  let html='';
+  if(nearExp.length>0){
+    html+=`<div class="expiry-banner"><div class="expiry-banner-title">🚨 Near Expiry Alert (${nearExp.length} items)</div><div class="expiry-grid">`;
+    nearExp.slice(0,4).forEach(p=>{
+      const ex=getExtra(p.id);const d=daysUntilExpiry(ex.expiry);const code=shelfCode(p.rack,p.shelf);
+      html+=`<div class="expiry-card"><div class="expiry-name">${esc(p.name)}</div><div class="expiry-meta">Expires in ${d} days</div><div class="expiry-shelf">Shelf ${code} · Qty: ${ex.expiryQty||getStock(p.id)}</div></div>`;
+    });
+    if(nearExp.length>4)html+=`<div class="expiry-card" style="display:flex;align-items:center;justify-content:center;color:var(--red);font-weight:700;font-size:12px">+${nearExp.length-4} more</div>`;
+    html+='</div></div>';
+  }
+  SECTIONS.forEach(sec=>{
+    html+=`<div class="sec-hd"><div class="sec-bar" style="background:${sec.color}"></div><div class="sec-name">${esc(sec.name)}</div><div class="sec-cnt">${sec.racks.length} racks</div></div><div class="rack-grid">`;
+    sec.racks.forEach(rn=>{
+      const prods=PLANOGRAM.filter(p=>p.rack===rn);
+      const low=prods.filter(p=>{const v=getStock(p.id);return v>0&&v<5;}).length;
+      const out=prods.filter(p=>getStock(p.id)===0).length;
+      const exp=prods.filter(p=>isNearExpiry(p.id)).length;
+      const photo=S.photos['rack_'+rn];
+      const alert=low>0||out>0||exp>0;
+      let thumb=photo?`<img src="${photo}" alt="">`:RACK_EMOJIS[rn-1]||'💊';
+      let adot=exp>0?`<div class="rack-alert-dot" style="background:var(--red)">Expiry!</div>`:out>0?`<div class="rack-alert-dot">Out</div>`:low>0?`<div class="rack-alert-dot">Low</div>`:'';
+      html+=`<div class="rack-card${alert?' alert':''}" onclick="openRack(${rn})">
+        <div class="rack-thumb" style="background:linear-gradient(135deg,${sec.bg},#fff)">${typeof thumb==='string'&&!photo?`<span style="font-size:28px">${thumb}</span>`:thumb}<div class="rack-badge">RACK ${rn}</div>${adot}</div>
+        <div class="rack-info"><div class="rack-name">Rack ${rn}</div><div class="rack-meta"><span class="rdot"></span>${prods.length} items · ${exp>0?`<span style="color:var(--red)">${exp} near expiry</span>`:'6 shelves'}</div></div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+// ── RACK DETAIL ──
+let currentRack=1;
+function openRack(n){currentRack=n;renderDetail();switchTab('detail');}
+function renderDetail(){
+  const rn=currentRack;const sec=sectionFor(rn);
+  let html=`<div class="rack-hd"><div class="rack-sec-chip" style="background:${sec.bg};color:${sec.color}">${esc(sec.name)}</div><h2>Rack ${rn}</h2><p>Tap shelf code to expand · Each shelf has photo + products + expiry tracking</p></div>`;
+  for(let sh=1;sh<=SPR;sh++){
+    const code=shelfCode(rn,sh);
+    const prods=PLANOGRAM.filter(p=>p.rack===rn&&p.shelf===sh);
+    const photo=S.photos['shelf_'+code];
+    const open=S.openShelves[code];
+    const shelfTypeLabel=prods[0]?prods[0].shelfType:'';
+    let rowCls='shelf-row';
+    const stocks=prods.map(p=>getStock(p.id));
+    const hasExpiry=prods.some(p=>isNearExpiry(p.id));
+    if(hasExpiry)rowCls+=' s-out';
+    else if(stocks.some(v=>v===0))rowCls+=' s-out';
+    else if(stocks.some(v=>v>0&&v<5))rowCls+=' s-low';
+    else if(prods.length>0)rowCls+=' s-ok';
+    let prodsHtml='';
+    if(!prods.length){prodsHtml=`<div class="empty-shelf">No items on shelf ${code}</div>`;}
+    else{
+      prodsHtml=prods.map(p=>{
+        const v=getStock(p.id);const st=stockStatus(v);
+        const ex=getExtra(p.id);const ne=isNearExpiry(p.id);
+        const days=daysUntilExpiry(ex.expiry);
+        const prodImg=getProdImg(p.id);
+        return `<div class="prod-mini${ne?' near-expiry':''}">
+          <div class="prod-mini-top">
+            <div class="prod-img-wrap" onclick="openImgModal('${p.id}')">
+              ${prodImg?`<img src="${prodImg}" alt="">`:'💊'}
+              <div class="prod-img-overlay"><span>📷</span></div>
+            </div>
+            <div class="prod-main">
+              <div class="pm-name">${esc(p.name)}</div>
+              ${p.barcode?`<div class="pm-barcode">📦 ${esc(p.barcode)}</div>`:''}
+              ${p.alshaya?`<div class="pm-alshaya">🏷 ${esc(p.alshaya)}</div>`:''}
+              <div class="pm-tags" style="margin-top:3px">
+                <span class="tag tl2">F:${p.facing}</span>
+                <span class="tag" style="background:#FFF7ED;color:#C2410C">N:${p.notch}</span>
+                ${ex.expiry?`<span class="tag ${ne?'texp':'texpok'}">${ne?'⚠️':'✅'} ${days!==null?days+'d':''}</span>`:''}
+              </div>
+            </div>
+            <div class="prod-right">
+              <span class="chip ${ne?'c-exp':st.chip}">${ne?'EXPIRY':st.label}</span>
+              <div class="stock-ctrl">
+                <button class="sbtn" onclick="adjStock('${p.id}',-1)">−</button>
+                <span class="snum">${v}</span>
+                <button class="sbtn" onclick="adjStock('${p.id}',1)">+</button>
+              </div>
+            </div>
+          </div>
+          ${ex.remarks?`<div class="remarks-text">📝 ${esc(ex.remarks)}</div>`:''}
+          <div class="prod-mini-footer">
+            <div class="prod-actions-row">
+              <button class="ibtn" title="Edit" onclick="editProd('${p.id}')"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              <button class="ibtn" title="Patient Info" onclick="showProductDetail('${p.id}')"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></button>
+              <button class="ibtn" title="Translate" onclick="showTranslateModal('${p.id}')"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 8l6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></svg></button>
+            </div>
+            ${ex.expiryQty?`<div class="expiry-badge">Exp.Qty: ${ex.expiryQty}</div>`:''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+    let photoHtml=photo?`<img src="${photo}" alt="">`:`<span class="ph-icon">📷</span>`;
+    html+=`<div class="${rowCls}" id="srow_${code}">
+      <div class="shelf-header" onclick="toggleShelf('${code}')">
+        <span class="shelf-code">${code}</span>
+        <span style="font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px">${esc(shelfTypeLabel)}</span>
+        <div class="shelf-hd-right">
+          <span class="shelf-cnt">${prods.length} items</span>
+          <svg class="chev" id="chev_${code}" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="${open?'transform:rotate(180deg)':''}"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="shelf-body${open?' open':''}" id="sbody_${code}">
+        <label for="ph_${code}" style="cursor:pointer"><div class="shelf-photo-wrap">${photoHtml}<div class="ph-label">📷 ${photo?'Change':'Add Photo'}</div></div></label>
+        <input type="file" id="ph_${code}" accept="image/*" style="display:none" onchange="uploadShelfPhoto(event,'${code}')">
+        ${prodsHtml}
+        <button class="add-shelf-btn" onclick="openAddForShelf(${rn},${sh})">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add to shelf ${code}
+        </button>
+      </div>
+    </div>`;
+  }
+  document.getElementById('detailInner').innerHTML=html;
+}
+
+function toggleShelf(code){
+  S.openShelves[code]=!S.openShelves[code];saveS();
+  const b=document.getElementById('sbody_'+code);const c=document.getElementById('chev_'+code);
+  if(b)b.classList.toggle('open');if(c)c.style.transform=S.openShelves[code]?'rotate(180deg)':'';
+}
+function uploadShelfPhoto(ev,code){
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{S.photos['shelf_'+code]=e.target.result;saveS();renderDetail();};r.readAsDataURL(file);
+}
+function adjStock(id,d){setStock(id,getStock(id)+d);renderDetail();renderRacks();}
+
+// ── PRODUCT IMAGE MODAL ──
+function openImgModal(id){
+  document.getElementById('imgTargetId').value=id;
+  const img=getProdImg(id);
+  const preview=document.getElementById('bigImgPreview');
+  preview.innerHTML=img?`<img src="${img}" style="width:100%;height:100%;object-fit:cover">`:'💊';
+  document.getElementById('imgMbk').classList.add('open');
+}
+function saveProdImg(ev){
+  const id=document.getElementById('imgTargetId').value;
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    S.prodImgs[id]=e.target.result;saveS();
+    document.getElementById('bigImgPreview').innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+    renderDetail();
+  };r.readAsDataURL(file);
+}
+function closeImgMbk(e){if(!e||e.target===document.getElementById('imgMbk'))document.getElementById('imgMbk').classList.remove('open');}
+
+// ── PATIENT DETAIL MODAL ──
+function showProductDetail(id){
+  const p=PLANOGRAM.find(x=>x.id===id);if(!p)return;
+  const ex=getExtra(id);const v=getStock(id);const st=stockStatus(v);
+  const ne=isNearExpiry(id);const days=daysUntilExpiry(ex.expiry);
+  const tips=getSellTips(p.name);
+  const prodImg=getProdImg(id);
+  const tipsHtml=tips.map(t=>`<div style="padding:5px 0;border-bottom:1px dashed var(--border);font-size:12px">• ${esc(t)}</div>`).join('');
+  document.getElementById('detailModalInner').innerHTML=`
+    <div style="width:100%;height:140px;border-radius:var(--r);background:linear-gradient(135deg,#EEF2FF,#E0F7F7);display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:12px;overflow:hidden">
+      ${prodImg?`<img src="${prodImg}" style="width:100%;height:100%;object-fit:cover">`:'💊'}
+    </div>
+    <div style="font-size:16px;font-weight:800;margin-bottom:4px">${esc(p.name)}</div>
+    ${p.barcode?`<div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:8px">📦 ${esc(p.barcode)}</div>`:''}
+    <div class="scan-stat-row">
+      <div class="scan-stat"><div class="scan-stat-val ${v===0?'c-out':v<5?'c-low':''}">${v}</div><div class="scan-stat-lbl">In Stock</div></div>
+      <div class="scan-stat"><div class="scan-stat-val">${p.facing}</div><div class="scan-stat-lbl">Facing</div></div>
+      <div class="scan-stat"><div class="scan-stat-val" style="font-size:13px">${shelfCode(p.rack,p.shelf)}</div><div class="scan-stat-lbl">Location</div></div>
+    </div>
+    ${ex.expiry?`<div style="background:${ne?'var(--red-bg)':'var(--green-bg)'};border:1.5px solid ${ne?'var(--red)':'var(--green)'};border-radius:var(--rs);padding:10px;margin-bottom:10px;font-size:12px;font-weight:600;color:${ne?'var(--red)':'var(--green)'}">${ne?'⚠️':'✅'} Expiry: ${ex.expiry} · ${days!==null?days+' days remaining':''} · Qty: ${ex.expiryQty||v}</div>`:''}
+    ${ex.remarks?`<div style="background:var(--cream);border-radius:var(--rs);padding:10px;margin-bottom:10px;font-size:12px;color:var(--ink)">📝 ${esc(ex.remarks)}</div>`:''}
+    <div class="sell-box"><div class="sell-box-title">💬 How to Sell This Product</div><div class="sell-box-text">${tipsHtml}</div></div>
+    <div class="sell-box" style="background:var(--teal-bg)">
+      <div class="sell-box-title" style="color:var(--teal)">🌍 Translate Dosage Instructions</div>
+      <div class="lang-tabs" id="detailLangTabs">
+        ${LANGUAGES.map(l=>`<button class="lang-btn" onclick="translateInDetail('${l.code}','${id}')">${l.flag} ${l.name}</button>`).join('')}
+      </div>
+      <div class="translation-box" id="detailTranslation" style="min-height:40px;font-size:12px;color:var(--muted)">Select a language to translate patient instructions</div>
+    </div>
+  `;
+  document.getElementById('detailMbk').classList.add('open');
+}
+function translateInDetail(langCode,id){
+  const p=PLANOGRAM.find(x=>x.id===id);if(!p)return;
+  const ex=getExtra(id);
+  const textToTranslate=ex.remarks||'Take 1 tablet daily with food';
+  document.querySelectorAll('#detailLangTabs .lang-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  const box=document.getElementById('detailTranslation');
+  const lang=LANGUAGES.find(l=>l.code===langCode);
+  box.className='translation-box'+(lang?.rtl?' rtl':'');
+  box.innerHTML=`<span class="translation-loading">Translating…</span>`;
+  setTimeout(()=>{
+    const translated=translateText(textToTranslate,langCode);
+    box.innerHTML=`<strong>${lang?.flag} ${lang?.name}:</strong><br>${esc(translated)}`;
+  },300);
+}
+function closeDetailModal(){document.getElementById('detailMbk').classList.remove('open');}
+function closeDetailMbk(e){if(e.target===document.getElementById('detailMbk'))closeDetailModal();}
+
+// ── TRANSLATE MODAL (standalone) ──
+function showTranslateModal(id){showProductDetail(id);}
+
+// ── SCANNER ──
+let scanStream=null;let scanInterval=null;
+function openScanner(){
+  document.getElementById('scannerBk').classList.add('open');
+  document.getElementById('scanResult').innerHTML='';
+  document.getElementById('manualBarcode').value='';
+  startCamera();
+}
+async function startCamera(){
+  try{
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    document.getElementById('scannerVideo').srcObject=scanStream;
+    scanInterval=setInterval(()=>captureAndSearch(),1200);
+  }catch(e){
+    document.getElementById('scannerVideo').style.display='none';
+    document.getElementById('scanResult').innerHTML='<div style="padding:12px;color:var(--muted);font-size:12px;text-align:center">📷 Camera not available. Use the manual barcode field below.</div>';
+  }
+}
+function captureAndSearch(){
+  const video=document.getElementById('scannerVideo');
+  const canvas=document.getElementById('scanCanvas');
+  if(!video.videoWidth)return;
+  canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+  canvas.getContext('2d').drawImage(video,0,0);
+  // Simple visual feedback - actual barcode decoding needs a library
+  // We'll show a scanning overlay frame
+}
+function searchByBarcode(code){
+  code=(code||'').trim();if(!code)return;
+  const p=PLANOGRAM.find(x=>x.barcode&&(x.barcode===code||x.barcode.includes(code)||x.alshaya===code));
+  const el=document.getElementById('scanResult');
+  if(!p){
+    el.innerHTML=`<div style="background:var(--red-bg);border:1.5px solid var(--red);border-radius:var(--r);padding:14px;margin-top:12px;text-align:center"><div style="font-size:24px;margin-bottom:6px">❌</div><div style="font-weight:700;color:var(--red)">Not Found</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Barcode: ${esc(code)}</div></div>`;
+    return;
+  }
+  const v=getStock(p.id);const st=stockStatus(v);const ex=getExtra(p.id);const ne=isNearExpiry(p.id);
+  const tips=getSellTips(p.name).slice(0,3);
+  el.innerHTML=`
+    <div class="scan-result-card">
+      <div class="scan-result-name">${esc(p.name)}</div>
+      <div class="scan-result-code">${esc(p.barcode)} · ${shelfCode(p.rack,p.shelf)}</div>
+      <div class="scan-stat-row">
+        <div class="scan-stat"><div class="scan-stat-val">${v}</div><div class="scan-stat-lbl">Stock</div></div>
+        <div class="scan-stat"><div class="scan-stat-val">${p.facing}</div><div class="scan-stat-lbl">Facing</div></div>
+        <div class="scan-stat"><div class="scan-stat-val" style="font-size:13px">${shelfCode(p.rack,p.shelf)}</div><div class="scan-stat-lbl">Shelf</div></div>
+      </div>
+      ${ne?`<div style="background:var(--red-bg);border:1.5px solid var(--red);border-radius:var(--rs);padding:8px;margin-bottom:8px;font-size:11px;font-weight:700;color:var(--red)">⚠️ NEAR EXPIRY: ${ex.expiry} · ${daysUntilExpiry(ex.expiry)} days</div>`:''}
+      <div class="sell-box"><div class="sell-box-title">How to Sell</div><div class="sell-box-text">${tips.map(t=>`• ${esc(t)}`).join('<br>')}</div></div>
+      <div class="lang-tabs" style="margin-top:10px" id="scanLangTabs">
+        ${LANGUAGES.map(l=>`<button class="lang-btn" onclick="translateScanResult('${l.code}','${p.id}',this)">${l.flag} ${l.name}</button>`).join('')}
+      </div>
+      <div class="translation-box" id="scanTranslation" style="margin-top:8px;min-height:36px;font-size:12px;color:var(--muted)">Tap a language to translate patient instructions</div>
+      <button class="btn-teal" style="margin-top:10px" onclick="closeScanner();showProductDetail('${p.id}')">View Full Details</button>
+    </div>`;
+}
+function translateScanResult(langCode,id,btn){
+  const p=PLANOGRAM.find(x=>x.id===id);if(!p)return;
+  const ex=getExtra(id);
+  const text=ex.remarks||'Take 1 tablet daily with food';
+  document.querySelectorAll('#scanLangTabs .lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const box=document.getElementById('scanTranslation');
+  const lang=LANGUAGES.find(l=>l.code===langCode);
+  box.className='translation-box'+(lang?.rtl?' rtl':'');
+  box.innerHTML='<span class="translation-loading">Translating…</span>';
+  setTimeout(()=>{box.innerHTML=`<strong>${lang?.flag} ${lang?.name}:</strong><br>${esc(translateText(text,langCode))}`;},300);
+}
+function closeScanner(){
+  document.getElementById('scannerBk').classList.remove('open');
+  if(scanInterval)clearInterval(scanInterval);
+  if(scanStream)scanStream.getTracks().forEach(t=>t.stop());
+  scanStream=null;
+}
+function closeScannerMbk(e){if(e.target===document.getElementById('scannerBk'))closeScanner();}
+
+// ── ADD/EDIT MODAL ──
+let _pendingImg='';
+function previewImg(ev){
+  const file=ev.target.files[0];if(!file)return;
+  const r=new FileReader();r.onload=e=>{
+    _pendingImg=e.target.result;
+    const pr=document.getElementById('imgPreview');
+    pr.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+  };r.readAsDataURL(file);
+}
+function editProd(id){
+  const p=PLANOGRAM.find(x=>x.id===id);if(!p)return;
+  const ex=getExtra(id);
+  document.getElementById('eId').value=id;
+  document.getElementById('fName').value=p.name;
+  document.getElementById('fBarcode').value=p.barcode||'';
+  document.getElementById('fAlshaya').value=p.alshaya||'';
+  buildRackOpts(p.rack);updateShelfOpts();
+  document.getElementById('fRack').value=p.rack;updateShelfOpts();
+  document.getElementById('fShelf').value=p.shelf;
+  document.getElementById('fNotch').value=p.shelfType+' Notch:'+p.notch;
+  document.getElementById('fFacing').value=p.facing||1;
+  document.getElementById('fStock').value=getStock(id);
+  document.getElementById('fLines').value=p.lines||1;
+  document.getElementById('fPrice').value=p.price||0;
+  document.getElementById('fExpiry').value=ex.expiry||'';
+  document.getElementById('fExpiryQty').value=ex.expiryQty||0;
+  document.getElementById('fRemarks').value=ex.remarks||'';
+  const existImg=getProdImg(id);
+  _pendingImg=existImg;
+  document.getElementById('imgPreview').innerHTML=existImg?`<img src="${existImg}" style="width:100%;height:100%;object-fit:cover">`:'📷';
+  document.getElementById('mTitle').textContent='Edit Product';
+  document.getElementById('modalBk').classList.add('open');
+}
+function buildRackOpts(sel){
+  const s=document.getElementById('fRack');s.innerHTML='';
+  SECTIONS.forEach(sec=>{
+    const og=document.createElement('optgroup');og.label=sec.name;
+    sec.racks.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent='Rack '+r;if(r==sel)o.selected=true;og.appendChild(o);});
+    s.appendChild(og);
+  });
+  for(let r=8;r<=12;r++){
+    if(!SECTIONS.some(s=>s.racks.includes(r))){const o=document.createElement('option');o.value=r;o.textContent='Rack '+r;if(r==sel)o.selected=true;document.getElementById('fRack').appendChild(o);}
+  }
+}
+function updateShelfOpts(){
+  const rack=parseInt(document.getElementById('fRack').value)||1;
+  const s=document.getElementById('fShelf');const cur=parseInt(s.value)||1;s.innerHTML='';
+  for(let i=1;i<=SPR;i++){const o=document.createElement('option');o.value=i;o.textContent='Shelf '+shelfCode(rack,i);if(i===cur)o.selected=true;s.appendChild(o);}
+}
+function openAddModal(){
+  _pendingImg='';
+  document.getElementById('eId').value='';document.getElementById('fName').value='';
+  document.getElementById('fBarcode').value='';document.getElementById('fAlshaya').value='';
+  buildRackOpts(currentRack);updateShelfOpts();
+  document.getElementById('fNotch').value='';document.getElementById('fFacing').value='1';
+  document.getElementById('fStock').value='0';document.getElementById('fLines').value='1';document.getElementById('fPrice').value='0';
+  document.getElementById('fExpiry').value='';document.getElementById('fExpiryQty').value='0';document.getElementById('fRemarks').value='';
+  document.getElementById('imgPreview').innerHTML='📷';
+  document.getElementById('mTitle').textContent='Add Product';document.getElementById('modalBk').classList.add('open');
+}
+function openAddForShelf(rack,shelf){
+  openAddModal();document.getElementById('fRack').value=rack;updateShelfOpts();document.getElementById('fShelf').value=shelf;
+}
+function closeMbk(e){if(e.target===document.getElementById('modalBk'))closeModal();}
+function closeModal(){document.getElementById('modalBk').classList.remove('open');}
+function saveProduct(){
+  const name=document.getElementById('fName').value.trim();if(!name){document.getElementById('fName').focus();return;}
+  const rack=parseInt(document.getElementById('fRack').value);const shelf=parseInt(document.getElementById('fShelf').value);
+  const facing=parseInt(document.getElementById('fFacing').value)||1;const stock=parseInt(document.getElementById('fStock').value)||0;
+  const lines=parseInt(document.getElementById('fLines').value)||1;const price=parseFloat(document.getElementById('fPrice').value)||0;
+  const barcode=document.getElementById('fBarcode').value.trim();const alshaya=document.getElementById('fAlshaya').value.trim();
+  const notchRaw=document.getElementById('fNotch').value.trim();
+  const expiry=document.getElementById('fExpiry').value;
+  const expiryQty=parseInt(document.getElementById('fExpiryQty').value)||0;
+  const remarks=document.getElementById('fRemarks').value.trim();
+  const id=document.getElementById('eId').value;
+  const extraData={expiry,expiryQty,remarks};
+  if(id){
+    S.stockOverrides[id]=stock;setExtra(id,extraData);
+    if(_pendingImg)S.prodImgs[id]=_pendingImg;
+    const pp=PLANOGRAM.find(x=>x.id===id);
+    if(pp)Object.assign(pp,{name,rack,shelf,facing,lines,price,barcode,alshaya});
+    // update custom list
+    const ci=S.customProds.findIndex(x=>x.id===id);
+    if(ci>=0)S.customProds[ci]=PLANOGRAM.find(x=>x.id===id);
+    saveS();
+  } else {
+    const newId=uid();
+    const np={id:newId,name,rack,shelf,facing,lines,price,barcode,alshaya,notch:notchRaw,shelfType:'',stock};
+    PLANOGRAM.push(np);S.customProds.push(np);
+    S.stockOverrides[newId]=stock;setExtra(newId,extraData);
+    if(_pendingImg)S.prodImgs[newId]=_pendingImg;
+    saveS();
+  }
+  closeModal();renderRacks();
+  if(document.getElementById('screen-detail').classList.contains('active'))renderDetail();
+  renderSummary();
+}
+
+// ── SUMMARY ──
+function renderSummary(){
+  const all=PLANOGRAM;const total=all.length;
+  const low=all.filter(p=>{const v=getStock(p.id);return v>0&&v<5;}).length;
+  const out=all.filter(p=>getStock(p.id)===0).length;
+  const exp=all.filter(p=>isNearExpiry(p.id)).length;
+  const val=all.reduce((s,p)=>s+(p.price*getStock(p.id)),0);
+  document.getElementById('summaryStats').innerHTML=`
+    <div class="stat-card"><div class="sic" style="background:#EEF2FF">📦</div><div><div class="sv">${total}</div><div class="sl">Total SKUs</div></div></div>
+    <div class="stat-card"><div class="sic" style="background:var(--amber-bg)">⚠️</div><div><div class="sv">${low}</div><div class="sl">Low Stock</div></div></div>
+    <div class="stat-card"><div class="sic" style="background:var(--red-bg)">🚫</div><div><div class="sv">${out}</div><div class="sl">Out of Stock</div></div></div>
+    <div class="stat-card"><div class="sic" style="background:var(--red-bg)">🗓</div><div><div class="sv" style="color:var(--red)">${exp}</div><div class="sl">Near Expiry</div></div></div>`;
+  const nearExp=all.filter(p=>isNearExpiry(p.id));
+  if(nearExp.length>0){
+    let bHtml=`<div class="expiry-banner" style="margin-bottom:14px"><div class="expiry-banner-title">🚨 Near Expiry Products (${nearExp.length})</div><div class="expiry-grid">`;
+    nearExp.forEach(p=>{
+      const ex=getExtra(p.id);const d=daysUntilExpiry(ex.expiry);
+      bHtml+=`<div class="expiry-card"><div class="expiry-name">${esc(p.name)}</div><div class="expiry-meta expiry-days-red">⏰ ${d} days · ${ex.expiry}</div><div class="expiry-shelf">Shelf ${shelfCode(p.rack,p.shelf)}</div></div>`;
+    });
+    bHtml+='</div></div>';
+    document.getElementById('nearExpiryBanner').innerHTML=bHtml;
+  } else {
+    document.getElementById('nearExpiryBanner').innerHTML='';
+  }
+  renderAllList(document.getElementById('searchInp')?.value||'');
+}
+function renderAllList(q){
+  let prods=[...PLANOGRAM];
+  if(q)prods=prods.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())||p.barcode?.includes(q)||p.alshaya?.toLowerCase().includes(q.toLowerCase()));
+  prods.sort((a,b)=>{const ae=isNearExpiry(a.id)?0:1;const be=isNearExpiry(b.id)?0:1;if(ae!==be)return ae-be;return a.rack-b.rack||a.shelf-b.shelf;});
+  const el=document.getElementById('allList');
+  if(!prods.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)">No products found.</div>';return;}
+  const sec=r=>sectionFor(r);
+  el.innerHTML=prods.map(p=>{
+    const v=getStock(p.id);const st=stockStatus(v);const s=sec(p.rack);const ne=isNearExpiry(p.id);
+    const ex=getExtra(p.id);const days=daysUntilExpiry(ex.expiry);
+    return `<div class="all-prod-card${ne?' near-expiry':''}" style="border-left-color:${ne?'var(--red)':s.color}">
+      <div style="flex:1;min-width:0">
+        <div class="pm-name">${esc(p.name)}</div>
+        <div class="pm-tags" style="margin-top:4px">
+          <span class="tag" style="background:${s.bg};color:${s.color};font-weight:700">${shelfCode(p.rack,p.shelf)}</span>
+          <span class="tag tl2">F:${p.facing}</span>
+          ${ne?`<span class="tag texp">⚠️ ${days}d</span>`:''}
+          ${p.barcode?`<span class="tag" style="background:#F8F8F8;color:#666;font-size:9px">${esc(p.barcode.slice(0,14))}</span>`:''}
+        </div>
+        ${ex.remarks?`<div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">📝 ${esc(ex.remarks.slice(0,60))}${ex.remarks.length>60?'…':''}</div>`:''}
+      </div>
+      <div class="prod-right">
+        <span class="chip ${ne?'c-exp':st.chip}">${ne?'EXPIRY':st.label}</span>
+        <div class="stock-ctrl">
+          <button class="sbtn" onclick="adjStockSum('${p.id}',-1)">−</button>
+          <span class="snum">${v}</span>
+          <button class="sbtn" onclick="adjStockSum('${p.id}',1)">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function adjStockSum(id,d){setStock(id,getStock(id)+d);renderSummary();renderRacks();}
+function filterAll(v){renderAllList(v);}
+
+// ── NAV ──
+function switchTab(tab){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  const nb=document.getElementById('nav-'+tab);if(nb)nb.classList.add('active');
+  document.getElementById('topAddBtn').style.display=tab==='detail'?'none':'';
+  if(tab==='summary')renderSummary();
+}
+function goBack(){switchTab('racks');renderRacks();}
+
+// ── INIT ──
+loadS();
+renderRacks();
+renderSummary();
+
+</script>
+</body>
+</html>
